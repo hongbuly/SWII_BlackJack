@@ -1,20 +1,22 @@
 import random
 
-#카드 리셋(카드 카운팅 견제,매 게임마다 리셋)
+
+# 카드 리셋(카드 카운팅 견제,매 게임마다 리셋)
 def cardreset():
     mark = ['♠', '◆', '♥', '♣']
     card = []
-    special =['A', 'J', 'Q', 'K']
+    special = ['A', 'J', 'Q', 'K']
     for i in mark:
-        for j in range(2,11):
+        for j in range(2, 11):
             j = str(j)
-            card.append(i+j)
+            card.append(i + j)
     for i in mark:
         for j in special:
-            card.append(i+j)
+            card.append(i + j)
     print(card)
 
-#파일 읽기(저장된 돈 체크), 경로 수정필수
+
+# 파일 읽기(저장된 돈 체크), 경로 수정필수
 def load():
     try:
         f = open("C:/Users/FOR/PycharmProjects/Test1/money.dat", 'r')
@@ -24,42 +26,58 @@ def load():
         f.write('100000')
     f.close()
 
-#카드 두장(베팅 시 카드 지급)지급후에 카드뭉치에서 제거
+
+# 카드 두장(베팅 시 카드 지급)지급후에 카드뭉치에서 제거
 def twocard():
     cardList = random.sample(card, 2)
     for i in cardList:
         card.remove(i)
     print(cardList)
 
-#카드 값 읽기
+
+# 카드 값 읽기
 def count():
     result = 0
     for i in cardlist:
-        i = int(i[1:])
-        result += i
+        if i[1:] == 'J':
+            result += 10
+        elif i[1:] == 'Q':
+            result += 10
+        elif i[1:] == 'K':
+            result += 10
+        if i[1:] == 'A':
+            if result <= 10:
+                result += 11
+            else:
+                result += 1
+        else:
+            i = int(i[1:])
+            result += i
     print(result)
 
-#새로운 카드 받기
+
+# 새로운 카드 받기
 def cardappend():
     cardlist.append(random.choice(card))
     card.remove(cardList[-1])
-    
-#카드 리셋 > 두장뽑기 > 카운트 실행시 뽑은 카드와 카드 숫자합,문자카드는 구현 X
 
 
-#1.카드 세팅
+# 카드 리셋 > 두장뽑기 > 카운트 실행시 뽑은 카드와 카드 숫자합
+
+
+# 1.카드 세팅
 mark = ['♠', '◆', '♥', '♣']
 card = []
-#special =['A', 'J', 'Q', 'K']
+special =['A', 'J', 'Q', 'K']
 for i in mark:
-    for j in range(2,11):
+    for j in range(2, 11):
         j = str(j)
+        card.append(i + j)
+for i in mark:
+    for j in special:
         card.append(i+j)
-#for i in mark:
-#   for j in special:
-#       card.append(i+j)
 
-#플레이어 카드 두장
+# 플레이어 카드 두장
 print('Player')
 playerList = random.sample(card, 2)
 for i in playerList:
@@ -69,12 +87,24 @@ print(playerList)
 resultPlayer = 0
 
 for i in playerList:
-    i = int(i[1:])
-    resultPlayer += i
+    if i[1:] == 'J':
+        resultPlayer += 10
+    elif i[1:] == 'Q':
+        resultPlayer += 10
+    elif i[1:] == 'K':
+        resultPlayer += 10
+    elif i[1:] == 'A':
+        if resultPlayer <= 10:
+            resultPlayer += 11
+        else:
+            resultPlayer += 1
+    else:
+        i = int(i[1:])
+        resultPlayer += i
 
 print(resultPlayer)
 
-#딜러 카드 세장
+# 딜러 카드 세장
 print('Dealer')
 dealerList = random.sample(card, 2)
 for i in dealerList:
@@ -87,17 +117,29 @@ print(dealerList)
 resultDealer = 0
 
 for i in dealerList:
-    i = int(i[1:])
-    resultDealer += i
+    if i[1:] == 'J':
+        resultDealer += 10
+    elif i[1:] == 'Q':
+        resultDealer += 10
+    elif i[1:] == 'K':
+        resultDealer += 10
+    elif i[1:] == 'A':
+        if resultDealer <= 10:
+            resultDealer += 11
+        else:
+            resultDealer += 1
+    else:
+        i = int(i[1:])
+        resultDealer += i
 
 print(resultDealer)
 
 '''
 실행 결과 예시
 Player
-['♣3', '♥3']
-6
+['♣8', '♠J']
+18
 Dealer
-['♣8', '♠4', '♣4']
-16
+['♠9', '♣9', '◆K']
+28
 '''
