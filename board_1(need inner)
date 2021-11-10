@@ -54,7 +54,7 @@ class Board(QWidget):
     def buttonClicked(self):
         button = self.sender()
         key = button.text()
-        if key == 'start':     
+        if key == 'start':
             #매 게임마다 카드 리셋후, 카드 지급, 내부와 외부 분리
             self.card = cardreset()
 
@@ -66,8 +66,8 @@ class Board(QWidget):
             print(self.player)
             print('dealer')
             print(self.dealer)
-            print(count(self.card)) #남아있는 카드 뭉치의 숫자합
-            #화면에 딜러와 플레이어 카드 현황 
+            print('남아있는 카드뭉치 숫자합:' + str(count(self.card))) #남아있는 카드 뭉치의 숫자합
+            #화면에 딜러와 플레이어 카드 현황
             self.display.setText('player:' + str(self.player))
             self.display1.setText('dealer:' + str(self.dealer))
 
@@ -78,7 +78,7 @@ class Board(QWidget):
                 cardappend(self.player, self.card)
                 self.display.setText('player:' + str(self.player))
                 print(self.player)
-                print(count(self.card))
+                print('남아있는 카드뭉치 숫자합:' + str(count(self.card)))
             except:
                 print('e')
                 self.display.setText("카드를 받아주세요")
