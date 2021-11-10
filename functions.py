@@ -13,7 +13,7 @@ def count(card):
     result = 0
     count_a = 0
     for i in card:
-        if i % 13 > 11 or i % 13 == 0:
+        if i % 13 >= 11 or i % 13 == 0:
             result += 10
         else:
             result += i % 13
