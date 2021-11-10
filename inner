@@ -16,7 +16,7 @@ def cardreset():
     return card
 
 
-# 파일 읽기(저장된 돈 체크)
+#파일 입출력
 
 def load():
     try:
@@ -68,6 +68,7 @@ def cardappend(cardlist, card):
     cardlist.append(random.choice(card))
     card.remove(cardlist[-1])
 
+#end버튼 클릭 이벤트
 
 def fight(player_result, dealer_result):
     if player_result > 21:
@@ -81,6 +82,8 @@ def fight(player_result, dealer_result):
             return "Lose"
         elif player_result > dealer_result:
             return "Win"
+
+
 
 
 
