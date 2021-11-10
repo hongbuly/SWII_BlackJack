@@ -54,23 +54,25 @@ class Board(QWidget):
         button = self.sender()
         key = button.text()
         if key == 'start':
+            # 게임 시작, 카드를 랜덤하게 가지고 와서 FIFO 구조로 Player 와 Dealer 에게 번갈아가며 카드 2장 배부
             self.card = set_card()
-            print(self.card)
             self.player.clear()
             self.dealer.clear()
 
             for i in range(2):
                 self.player.append(self.card.pop(0))
                 self.dealer.append(self.card.pop(0))
-            print(self.player)
-            print(show_card(self.player))
             self.display.setText(show_card(self.player))
         elif key == 'push':
+            # 카드를 뽑음, @@@ 딜러는 구현 X @@@
             self.player.append(self.card.pop())
             self.display.setText(show_card(self.player))
         elif key == 'end':
+            # 게임 끝, @@@ 딜러가 더 카드를 뽑을 수도 있게 구현해야 함 @@@
             player_result = count(self.player)
             dealer_result = count(self.dealer)
+
+            # 승률 조건을 나눔
             if player_result > 21 and dealer_result > 21:
                 self.display.setText("Draw")
             elif player_result > 21 and dealer_result <= 21:
