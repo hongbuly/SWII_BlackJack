@@ -1,0 +1,86 @@
+import random
+
+
+# 카드 리셋(카드 카운팅 견제,매 게임마다 리셋)
+def cardreset():
+    mark = ['♠', '◆', '♥', '♣']
+    card = []
+    special = ['A', 'J', 'Q', 'K']
+    for i in mark:
+        for j in range(2, 11):
+            j = str(j)
+            card.append(i + j)
+    for i in mark:
+        for j in special:
+            card.append(i + j)
+    return card
+
+
+# 파일 읽기(저장된 돈 체크)
+
+def load():
+    try:
+        f = open("money.dat", 'r')
+        return int(f.readline())
+    except:
+        f = open("money.dat", 'w')
+        f.write('100000')
+        return 100000
+
+
+def write(money):
+    f = open("money.dat", 'w')
+    f.write(money)
+    f.close()
+
+
+# 카드 두장(베팅 시 카드 지급)지급후에 카드뭉치에서 제거
+def twocard(card):
+    cardList = random.sample(card, 2)
+    for i in cardList:
+        card.remove(i)
+    return cardList
+
+
+# 카드 값 읽기
+def count(cardlist):
+    result = 0
+    for i in cardlist:
+        if i[1:] == 'J':
+            result += 10
+        elif i[1:] == 'Q':
+            result += 10
+        elif i[1:] == 'K':
+            result += 10
+        elif i[1:] == 'A':
+            if result <= 10:
+                result += 11
+            else:
+                result += 1
+        else:
+            i = int(i[1:])
+            result += i
+    return result
+
+
+# 새로운 카드 받기
+def cardappend(cardlist, card):
+    cardlist.append(random.choice(card))
+    card.remove(cardlist[-1])
+
+
+def fight(player_result, dealer_result):
+    if player_result > 21:
+        return "Lose"
+    elif dealer_result > 21:
+        return "Win"
+    else:
+        if player_result == dealer_result:
+            return "Draw"
+        elif player_result < dealer_result:
+            return "Lose"
+        elif player_result > dealer_result:
+            return "Win"
+
+
+
