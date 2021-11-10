@@ -25,7 +25,7 @@ class Board(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
+#화면 2개(딜러, 플레이어)
         self.display = QLineEdit()
         self.display.setReadOnly(True)
         self.display.setMaxLength(50)
@@ -54,7 +54,8 @@ class Board(QWidget):
     def buttonClicked(self):
         button = self.sender()
         key = button.text()
-        if key == 'start':
+        if key == 'start':     
+            #매 게임마다 카드 리셋후, 카드 지급, 내부와 외부 분리
             self.card = cardreset()
 
             self.player = twocard(self.card)
@@ -66,11 +67,13 @@ class Board(QWidget):
             print('dealer')
             print(self.dealer)
             print(count(self.card)) #남아있는 카드 뭉치의 숫자합
+            #화면에 딜러와 플레이어 카드 현황 
             self.display.setText('player:' + str(self.player))
             self.display1.setText('dealer:' + str(self.dealer))
 
 
         elif key == 'push':
+            #카드를 받지 않은 상태에서 push버튼 클릭시 문구 추가, 내부와 외부 분리
             try:
                 cardappend(self.player, self.card)
                 self.display.setText('player:' + str(self.player))
@@ -81,7 +84,7 @@ class Board(QWidget):
                 self.display.setText("카드를 받아주세요")
 
         elif key == 'end':
-
+            #플레이어와 딜러 숫자합 비교, 내부와 외부 분리
             player_result = count(self.player)
             dealer_result = count(self.dealer)
             self.display.setText(fight(player_result, dealer_result))
