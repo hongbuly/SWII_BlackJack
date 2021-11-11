@@ -21,17 +21,17 @@ def write(money):
 
 # 카드 두장(베팅 시 카드 지급)지급후에 카드뭉치에서 제거
 def twocard(card):
-    cardList = random.sample(card, 2)
-    for i in cardList:
-        card.remove(i)
+    cardList = []
+    for i in range(2):
+        cardList.append(card.pop())
     return cardList
 
 
 # 새로운 카드 받기
 
 def cardappend(cardlist, card):
-    cardlist.append(random.choice(card))
-    card.remove(cardlist[-1])
+    cardlist.append(card.pop())
+
 
 # end버튼 클릭 이벤트
 
