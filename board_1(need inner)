@@ -25,13 +25,17 @@ class Board(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-#화면 2개(딜러, 플레이어)
+        self.money = load()
+#화면 3개(딜러, 플레이어, 돈)
         self.display = QLineEdit()
         self.display.setReadOnly(True)
         self.display.setMaxLength(50)
         self.display1 = QLineEdit()
         self.display1.setReadOnly(True)
         self.display1.setMaxLength(50)
+        self.moneydisplay = QLineEdit()
+        self.moneydisplay.setReadOnly(True)
+        self.moneydisplay.setMaxLength(50)
 
 
         button_layout = QGridLayout()
@@ -46,51 +50,49 @@ class Board(QWidget):
         main_layout.setSizeConstraint(QLayout.SetFixedSize)
         main_layout.addWidget(self.display1, 0, 0, 1, 2)
         main_layout.addWidget(self.display, 1, 0, 1, 2)
+        main_layout.addWidget(self.moneydisplay, 3, 0, 1, 2)
         main_layout.addLayout(button_layout, 2, 0)
 
         self.setLayout(main_layout)
         self.setWindowTitle("Black Jack")
+        self.moneydisplay.setText('Money:' + str(self.money))
 
     def buttonClicked(self):
         button = self.sender()
         key = button.text()
         if key == 'start':
-            #매 게임마다 카드 리셋후, 카드 지급, 내부와 외부 분리
-            self.card = cardreset()
-
+            # 매 게임마다 카드 리셋후, 카드 지급, 내부와 외부 분리
+            self.card = set_card()
             self.player = twocard(self.card)
             self.dealer = twocard(self.card)
-
             # print Gui에서 안보임
             print('player')
-            print(self.player)
+            print(show_card(self.player))
             print('dealer')
-            print(self.dealer)
-            print('남아있는 카드뭉치 숫자합:' + str(count(self.card))) #남아있는 카드 뭉치의 숫자합
-            #화면에 딜러와 플레이어 카드 현황
-            self.display.setText('player:' + str(self.player))
-            self.display1.setText('dealer:' + str(self.dealer))
-
+            print(show_card(self.dealer))
+            self.display.setText('player:' + show_card(self.player))
+            self.display1.setText('dealer:' + show_card(self.dealer[1:]) + 'H')
 
         elif key == 'push':
-            #카드를 받지 않은 상태에서 push버튼 클릭시 문구 추가, 내부와 외부 분리
+
+            # 카드를 받지 않은 상태에서 push버튼 클릭시 문구 추가, 내부와 외부 분리
             try:
                 cardappend(self.player, self.card)
-                self.display.setText('player:' + str(self.player))
-                print(self.player)
-                print('남아있는 카드뭉치 숫자합:' + str(count(self.card)))
+                self.display.setText('player:' + show_card(self.player))
+                print(show_card(self.player))
             except:
-                print('e')
                 self.display.setText("카드를 받아주세요")
 
         elif key == 'end':
-            #플레이어와 딜러 숫자합 비교, 내부와 외부 분리
+            # 딜러 알고리즘 추가
+            dealer_algo(count(self.dealer), self.dealer, self.card)
+            self.display1.setText('dealer:' + show_card(self.dealer))
+            # 플레이어와 딜러 숫자합 비교, 내부와 외부 분리
             player_result = count(self.player)
             dealer_result = count(self.dealer)
             self.display.setText(fight(player_result, dealer_result))
 
             print(player_result, dealer_result)
-
 
 
 if __name__ == '__main__':
