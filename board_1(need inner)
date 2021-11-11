@@ -76,12 +76,15 @@ class Board(QWidget):
         elif key == 'push':
 
             # 카드를 받지 않은 상태에서 push버튼 클릭시 문구 추가, 내부와 외부 분리
-            try:
-                cardappend(self.player, self.card)
-                self.display.setText('player:' + show_card(self.player))
-                print(show_card(self.player))
-            except:
-                self.display.setText("카드를 받아주세요")
+
+            cardappend(self.player, self.card)
+            self.display.setText('player:' + show_card(self.player))
+            print(show_card(self.player))
+            if count(self.player) > 21:
+                player_result = count(self.player)
+                dealer_result = count(self.dealer)
+                self.display.setText(fight(player_result, dealer_result))
+
 
         elif key == 'end':
             # 딜러 알고리즘 추가
@@ -91,6 +94,8 @@ class Board(QWidget):
             player_result = count(self.player)
             dealer_result = count(self.dealer)
             self.display.setText(fight(player_result, dealer_result))
+            self.player.clear()
+            self.dealer.clear()
 
             print(player_result, dealer_result)
 
