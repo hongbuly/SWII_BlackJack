@@ -21,11 +21,14 @@ class Button(QToolButton):
 
 
 class Board(QWidget):
-
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.card = []
+        self.player = []
+        self.dealer = []
         self.money = load()
         self.betting_cost = 0
+
         # 화면 3개(딜러, 플레이어, 돈)
         self.display = QLineEdit()
         self.display.setReadOnly(True)
@@ -72,7 +75,7 @@ class Board(QWidget):
             if betting_cost.isdigit() and betting_cost:
                 self.betting_cost = int(betting_cost)
                 if self.betting_cost < 1000:
-                    self.display.setText("betting min : 1000")
+                    self.display.setText("Betting min : 1000")
                     return
 
                 if self.betting_cost > self.money:

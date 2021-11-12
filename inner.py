@@ -22,13 +22,14 @@ def write(money):
     f.close()
 
 
+# Lose: 0 Win: 1 Draw 2
 def set_money(now, betting, num):
     if num == 0:
         write(str(now - betting))
         return now - betting
     elif num == 1:
         write(str(now + betting))
-        return now - betting
+        return now + betting
     else:
         return now
 
