@@ -22,7 +22,6 @@ def write(money):
     f.close()
 
 
-# Lose: 0 Win: 1 Draw 2
 def set_money(now, betting, num):
     if num == 0:
         write(str(now - betting))
@@ -30,6 +29,9 @@ def set_money(now, betting, num):
     elif num == 1:
         write(str(now + betting))
         return now + betting
+    elif num == 3:
+        write(str(int(now + (1.5 * betting))))
+        return int(now + (betting * 1.5))
     else:
         return now
 
@@ -67,6 +69,8 @@ def get_fight_text(num):
         return "Lose"
     elif num == 1:
         return "Win"
+    elif num == 3:
+        return "Black Jack!!"
     else:
         return "Draw"
 
@@ -106,3 +110,5 @@ def dealer_algo(result, who, card):
         cardappend(who, card)
         if count(who) > 16:
             break
+
+
