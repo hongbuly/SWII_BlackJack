@@ -108,7 +108,7 @@ class Board(QWidget):
 
             # 블랙잭 체크 추가
             for i in self.player:
-                if i % 13 > 0 and i % 13 < 10:
+                if 0 < i % 13 < 10:
                     break
             else:
                 self.finish_display(True)
