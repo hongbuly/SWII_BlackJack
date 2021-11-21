@@ -5,12 +5,11 @@ marks = ['♠', '◆', '♥', '♣']
 card_english = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
 
 
-# 파일 입출력
 def load():
     try:
         f = open("money.dat", 'r')
         return int(f.readline())
-    except:
+    except FileNotFoundError:
         f = open("money.dat", 'w')
         f.write('100000')
         return 100000
@@ -37,16 +36,16 @@ def set_money(now, betting, num):
 
 
 # 카드 두장(베팅 시 카드 지급)지급후에 카드뭉치에서 제거
-def twocard(card):
-    cardList = []
+def two_card(card):
+    card_list = []
     for i in range(2):
-        cardList.append(card.pop(0))
-    return cardList
+        card_list.append(card.pop())
+    return card_list
 
 
 # 새로운 카드 받기
-def cardappend(cardlist, card):
-    cardlist.append(card.pop(0))
+def card_append(card_list, card):
+    card_list.append(card.pop())
 
 
 # end 버튼 클릭 이벤트, Lose: 0 Win: 1 Draw 2
@@ -107,8 +106,6 @@ def show_card(card):
 
 def dealer_algo(result, who, card):
     while result <= 16:
-        cardappend(who, card)
+        card_append(who, card)
         if count(who) > 16:
             break
-
-

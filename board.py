@@ -64,10 +64,18 @@ class Board(QWidget):
         self.setWindowTitle("Black Jack")
         self.money_display.setText('Money:' + str(self.money))
 
+        self.card = []
+        self.player = []
+        self.dealer = []
+        self.game_start = False
+
     def button_clicked(self):
         button = self.sender()
         key = button.text()
         if key == 'start':
+            if self.game_start:
+                self.display.setText("Please Finish Game.")
+                return
             betting_cost = self.betting_display.text()
             if betting_cost.isdigit() and betting_cost:
                 self.betting_cost = int(betting_cost)
@@ -86,8 +94,10 @@ class Board(QWidget):
 
             # 매 게임마다 카드 리셋후, 카드 지급, 내부와 외부 분리
             self.card = set_card()
-            self.player = twocard(self.card)
-            self.dealer = twocard(self.card)
+            self.player = two_card(self.card)
+            self.dealer = two_card(self.card)
+            self.game_start = True
+
             # print Gui 에서 안보임
             print('player')
             print(show_card(self.player))
@@ -95,61 +105,53 @@ class Board(QWidget):
             print(show_card(self.dealer))
             self.display.setText('player:' + show_card(self.player))
             self.display1.setText('dealer:' + show_card(self.dealer[1:]) + 'H')
+
             # 블랙잭 체크 추가
-            black = 0
             for i in self.player:
-                if i % 13 == 0:
-                    black += 1
-                elif i % 13 >= 10:
-                    black += 2
-                else:
-                    pass
-            if black == 3:
-                self.display.setText(get_fight_text(3) + str(show_card(self.player)))
-                self.money = set_money(self.money, self.betting_cost, 3)
-                self.player.clear()
-                self.dealer.clear()
-                self.betting_display.setReadOnly(False)
-                self.money_display.setText('Money:' + str(self.money))
-                self.betting_display.setText('')
+                if i % 13 > 0 or i % 13 < 10:
+                    break
+            else:
+                self.finish_display(True)
 
         elif key == 'push':
-            # 카드를 받지 않은 상태에서 push 버튼 클릭시 문구 추가, 내부와 외부 분리
-            cardappend(self.player, self.card)
+            if not self.game_start:
+                self.display.setText("Please Start Game First.")
+                return
+
+            card_append(self.player, self.card)
             self.display.setText('player:' + show_card(self.player))
             print(show_card(self.player))
             if count(self.player) > 21:
-                player_result = count(self.player)
-                dealer_result = count(self.dealer)
-                fight_num = fight(player_result, dealer_result)
-                self.display.setText(get_fight_text(fight_num))
-                self.money = set_money(self.money, self.betting_cost, fight_num)
-                self.player.clear()
-                self.dealer.clear()
-                self.betting_display.setReadOnly(False)
-                self.money_display.setText('Money:' + str(self.money))
-                self.betting_display.setText('')
-
+                self.finish_display(False)
         elif key == 'end':
+            if not self.game_start:
+                self.display.setText("Please Start Game First.")
+                return
             # 딜러 알고리즘 추가
-            try:
-                if self.betting_cost >= 1000:
-                    dealer_algo(count(self.dealer), self.dealer, self.card)
-                self.display1.setText('dealer:' + show_card(self.dealer))
-                # 플레이어와 딜러 숫자합 비교, 내부와 외부 분리
-                player_result = count(self.player)
-                dealer_result = count(self.dealer)
-                fight_num = fight(player_result, dealer_result)
-                self.display.setText(get_fight_text(fight_num))
-                self.money = set_money(self.money, self.betting_cost, fight_num)
-                self.player.clear()
-                self.dealer.clear()
-                self.betting_display.setReadOnly(False)
-                self.money_display.setText('Money:' + str(self.money))
-                self.betting_display.setText('')
-                self.betting_cost = 0
-            except:
-                self.display.setText('Need Start')
+            dealer_algo(count(self.dealer), self.dealer, self.card)
+            self.finish_display(False)
+
+    def finish_display(self, bj):
+        if bj:
+            self.display.setText(get_fight_text(3) + str(show_card(self.player)))
+            self.money = set_money(self.money, self.betting_cost, 3)
+            fight_num = 3
+        else:
+            self.display1.setText('dealer:' + show_card(self.dealer))
+            # 플레이어와 딜러 숫자합 비교, 내부와 외부 분리
+            player_result = count(self.player)
+            dealer_result = count(self.dealer)
+            fight_num = fight(player_result, dealer_result)
+            self.display.setText(get_fight_text(fight_num))
+        self.money = set_money(self.money, self.betting_cost, fight_num)
+        self.player.clear()
+        self.dealer.clear()
+        self.betting_display.setReadOnly(False)
+        self.money_display.setText('Money:' + str(self.money))
+        self.betting_display.setText('')
+        self.betting_cost = 0
+        self.game_start = False
+
 
 if __name__ == '__main__':
     import sys
