@@ -1,8 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5 import QtCore
-import sys
-
+from PyQt5.QtMultimedia import *
 
 from innerCode import *
 
@@ -19,6 +18,33 @@ class Button(QToolButton):
         size.setWidth(max(size.width(), size.height()))
         return size
 
+class MusicPlayer(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.player = QMediaPlayer()
+
+    def volumeUp(self):
+        currentVolume = self.player.volume() #
+        print(currentVolume)
+        self.player.setVolume(currentVolume + 5)
+
+    def volumeDown(self):
+        currentVolume = self.player.volume() #
+        print(currentVolume)
+        self.player.setVolume(currentVolume - 5)
+
+    def volumeMute(self):
+        self.player.setMuted(not self.player.isMuted())
+
+    def playAudioFile(self):
+        full_file_path = os.path.join(os.getcwd(), './sounds/bgm.mp3')
+        url = QtCore.QUrl.fromLocalFile(full_file_path)
+        content = QMediaContent(url)
+
+        self.player.setMedia(content)
+        self.player.play()
+
+
 class FirstWindow(QWidget):
 
     switch_window = QtCore.pyqtSignal()
@@ -30,11 +56,28 @@ class FirstWindow(QWidget):
         self.setGeometry(0, 0, 900, 600)
         self.setStyleSheet('background-color: green')
 
+        self.music = MusicPlayer()
+        self.music.playAudioFile()
+
         self.image = QPixmap("./PNG-cards-1.3/title.png")
         self.label = QLabel()
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setPixmap(self.image)
+
         self.startbutton = QPushButton("PLAY")
+        self.volumeUpButton = QPushButton("+",clicked=self.music.volumeUp)
+        self.volumeDownButton = QPushButton("-",clicked=self.music.volumeDown)
+        self.volumeMuteButton = QPushButton("Mute",clicked=self.music.volumeMute)
+
+        self.styleButton(self.volumeUpButton)
+        self.styleButton(self.volumeDownButton)
+        self.styleButton(self.volumeMuteButton)
+
+        self.volumelayout = QHBoxLayout()
+        self.volumelayout.addWidget(self.volumeDownButton)
+        self.volumelayout.addWidget(self.volumeMuteButton)
+        self.volumelayout.addWidget(self.volumeUpButton)
+
         self.startbutton.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.startbutton.setStyleSheet(
             """QPushButton{background-color: rgb(249, 228, 183);
@@ -43,17 +86,19 @@ class FirstWindow(QWidget):
             font-family: 'Georgia';
             font-size: 40px;
             margin-bottom: 5px;
-            padding: 15px 0;}"""
+            padding: 8px 0;}"""
             """QPushButton::hover
             {
             background-color : white;
             }
             """
         )
+
         self.startbutton.clicked.connect(self.secondwindow)
         self.grid = QGridLayout()
         self.grid.addWidget(self.label, 1, 1)
         self.grid.addWidget(self.startbutton, 2, 1)
+        self.grid.addLayout(self.volumelayout, 3, 1)
         self.setLayout(self.grid)
 
         self.center()
@@ -69,6 +114,48 @@ class FirstWindow(QWidget):
     def secondwindow(self):
         self.switch_window.emit()
 
+    def styleButton(self, button):
+        button.setCursor(QtCore.Qt.PointingHandCursor)
+        button.setStyleSheet(
+            """QPushButton{background-color: rgb(249, 228, 183);
+                        color: black;
+                        border-radius: 15px;
+                        font-family: 'Georgia';
+                        font-size: 25px;
+                        padding: 5px 0;}"""
+            """QPushButton::hover
+            {
+            background-color : white;
+            }
+            """
+        )
+
+    def center(self):
+        qr = self.frameGeometry()
+        cp = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
+
+    def styleButton(self, button):
+        button.setCursor(QtCore.Qt.PointingHandCursor)
+        button.setStyleSheet(
+            """QPushButton{background-color: rgb(249, 228, 183);
+                        color: black;
+                        border-radius: 15px;
+                        font-family: 'Georgia';
+                        font-size: 25px;;
+                        padding: 5px 0;}"""
+            """QPushButton::hover
+            {
+            background-color : white;
+            }
+            """
+        )
+
+    def firstwindow(self):
+        self.switch_window.emit()
+
+
 
 class SecondWindow(QWidget):
     def __init__(self):
@@ -81,7 +168,7 @@ class SecondWindow(QWidget):
         self.center()
 
         self.qmsgBox = QMessageBox()
-        self.qmsgBox.setWindowTitle('Result')
+        self.qmsgBox.setWindowTitle("Result")
         self.qmsgBox.setWindowIcon(QIcon("./PNG-cards-1.3/blackjack.png"))
         self.qmsgBox.setStyleSheet(
             """QMessageBox
@@ -100,6 +187,7 @@ class SecondWindow(QWidget):
         self.b_display = QLabel('bet: ' + str(self.betting_cost))
         self.b_display.setStyleSheet(
             """QLabel
+            
             {
             font-size: 18px;
             font-family: 'Georgia';
@@ -107,7 +195,6 @@ class SecondWindow(QWidget):
             }
             """
         )
-
         self.m_display = QLabel('money: ' + str(self.money))
         self.m_display.setStyleSheet(
             """QLabel
@@ -119,14 +206,14 @@ class SecondWindow(QWidget):
             """
         )
 
-        dealBtn = Button("deal", self.button_clicked)
+        self.dealBtn = Button("deal", self.button_clicked)
         stayBtn = Button("stay", self.button_clicked)
         appendBtn = Button("new card", self.button_clicked)
         resetBtn = Button("reset", self.button_clicked)
         self.pbetBtn = Button("+100", self.button_clicked)
         self.mbetBtn = Button("-100", self.button_clicked)
 
-        self.styleButton(dealBtn)
+        self.styleButton(self.dealBtn)
         self.styleButton(stayBtn)
         self.styleButton(appendBtn)
         self.styleButton(resetBtn)
@@ -145,7 +232,7 @@ class SecondWindow(QWidget):
 
         hbox = QHBoxLayout()
         hbox.addLayout(vbox1)
-        hbox.addWidget(dealBtn)
+        hbox.addWidget(self.dealBtn)
         hbox.addWidget(stayBtn)
         hbox.addWidget(appendBtn)
         hbox.addWidget(resetBtn)
@@ -237,7 +324,7 @@ class SecondWindow(QWidget):
             else:
                 self.loadDDealerCard(dl, 'green', self.cntLst[idx])
 
-        self.betting_cost = 0
+        self.betting_cost = 1000
         self.b_display.setText('bet: ' + str(self.betting_cost))
 
     def styleButton(self, button):
@@ -287,12 +374,13 @@ class SecondWindow(QWidget):
                     return
                 elif self.betting_cost > self.money:
                     self.display.setText("You don't have much money")
-                    self.betting_cost = 10000
+                    self.betting_cost = 1000
                     self.b_display.setText('bet: ' + str(self.betting_cost))
                     return
                 else:
                     self.pbetBtn.setDisabled(True)
                     self.mbetBtn.setDisabled(True)
+                    self.dealBtn.setDisabled(True)
                     self.display.setText("let's start!")
 
                     self.card = set_card()
@@ -312,13 +400,13 @@ class SecondWindow(QWidget):
                     # 시작하자마자 burst 불가능
                     # if burst(count(self.intPlayercards)):
                     #     print("lose")
-                    #     QMessageBox.about(self,"BlackJack", "you lose !")
+                    #     QMessageBox.about(self, "BlackJack", "you lose !")
                     #     return
                     if count(self.intPlayercards) == 21:
-                        self.qmsgBox.setText("Congratulations !\nBlack Jack!")
+                        self.qmsgBox.setText("Congratulations! \nBlack Jack!")
                         self.qmsgBox.exec()
-                        self.money = set_money(self.money, self.betting_cost, 3)
                         self.dealCount+=1
+                        self.money = set_money(self.money, self.betting_cost, 3)
                         self.m_display.setText('money: ' + str(self.money))
                     return
             else:
@@ -334,7 +422,6 @@ class SecondWindow(QWidget):
                 self.qmsgBox.setText("Please click reset button")
                 self.qmsgBox.exec()
                 return
-
             cardappend(self.intPlayercards, self.card)
             # print(self.intPlayercards)
             # [34, 5, 7]
@@ -344,14 +431,14 @@ class SecondWindow(QWidget):
                 if idx < len(self.intPlayercards):
                     self.loadPPlayerCard(pl, self.playercards[idx], self.cntLst[idx])
             if burst(count(self.intPlayercards)):
-                self.qmsgBox.setText("Burst !")
+                self.qmsgBox.setText("Burst!")
                 self.qmsgBox.exec()
                 self.dealCount += 1
                 self.money = set_money(self.money, self.betting_cost, 0)
                 self.m_display.setText('money: ' + str(self.money))
                 return
             elif count(self.intPlayercards) == 21:
-                self.qmsgBox.setText("Congratulations !\nBlack Jack !")
+                self.qmsgBox.setText("Congratulations! \nBlack Jack!")
                 self.qmsgBox.exec()
                 self.dealCount += 1
                 self.money = set_money(self.money, self.betting_cost, 3)
@@ -388,14 +475,14 @@ class SecondWindow(QWidget):
                         if idx < len(self.intDealercards):
                             self.loadDDealerCard(dl, self.dealercards[idx], self.cntLst[idx])
                 if burst(count(self.intDealercards)):
-                    self.qmsgBox.setText("you win !")
+                    self.qmsgBox.setText("You Win!")
                     self.qmsgBox.exec()
                     self.dealCount += 1
                     self.money = set_money(self.money, self.betting_cost, 3)
                     self.m_display.setText('money: ' + str(self.money))
                     return
                 elif count(self.intDealercards) == 21:
-                    self.qmsgBox.setText("you lose !")
+                    self.qmsgBox.setText("You lose!")
                     self.qmsgBox.exec()
                     self.dealCount += 1
                     self.money = set_money(self.money, self.betting_cost, 0)
@@ -404,21 +491,21 @@ class SecondWindow(QWidget):
                 else:
                     res = fight(count(self.intPlayercards),count(self.intDealercards))
                     if res == 2:
-                        self.qmsgBox.setText("Draw !")
+                        self.qmsgBox.setText("Draw!")
                         self.qmsgBox.exec()
                         self.dealCount += 1
                         self.money = set_money(self.money, self.betting_cost, 2)
                         self.m_display.setText('money: ' + str(self.money))
                         return
                     elif res == 1:
-                        self.qmsgBox.setText("you win !")
+                        self.qmsgBox.setText("You win!")
                         self.qmsgBox.exec()
                         self.dealCount += 1
                         self.money = set_money(self.money, self.betting_cost, 3)
                         self.m_display.setText('money: ' + str(self.money))
                         return
                     else:
-                        self.qmsgBox.setText("you lose !")
+                        self.qmsgBox.setText("You lose!")
                         self.qmsgBox.exec()
                         self.dealCount += 1
                         self.money = set_money(self.money, self.betting_cost, 0)
@@ -427,12 +514,13 @@ class SecondWindow(QWidget):
 
         # if key == 'reset':
         else:
-            self.pbetBtn.setDisabled(False)
-            self.mbetBtn.setDisabled(False)
             if self.dealCount == 0:
                 self.qmsgBox.setText("You should click deal button first")
                 self.qmsgBox.exec()
                 return
+            self.dealBtn.setDisabled(False)
+            self.pbetBtn.setDisabled(False)
+            self.mbetBtn.setDisabled(False)
             self.dealCount = 0
             for pl in self.pLabel:
                 idx = self.pLabel.index(pl)
@@ -451,7 +539,6 @@ class SecondWindow(QWidget):
             self.betting_cost = 1000
             self.b_display.setText('bet: ' + str(self.betting_cost))
 
-
 class Controller:
     def __init__(self):
         pass
@@ -469,6 +556,7 @@ class Controller:
 
 
 if __name__ == "__main__":
+    import sys, os
     app = QApplication(sys.argv)
     controller = Controller()
     controller.show_firstWindow()
