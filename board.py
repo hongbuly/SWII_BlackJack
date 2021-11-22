@@ -107,10 +107,15 @@ class Board(QWidget):
             self.display1.setText('dealer:' + show_card(self.dealer[1:]) + 'H')
 
             # 블랙잭 체크 추가
+            black = 0
             for i in self.player:
-                if 0 < i % 13 < 10:
-                    break
-            else:
+                if i % 13 == 0:
+                    black += 1
+                elif i % 13 >= 10:
+                    black += 2
+                else:
+                    pass
+            if black == 3:
                 self.finish_display(True)
 
         elif key == 'push':
