@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QWidget
 from PyQt5 import QtCore
-from PyQt5.QtMultimedia import *
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 import os
 
 
@@ -10,14 +10,14 @@ class MusicPlayer(QWidget):
         self.player = QMediaPlayer()
 
     def volumeUp(self):
-        currentVolume = self.player.volume()
-        print(currentVolume)
-        self.player.setVolume(currentVolume + 5)
+        current_volume = self.player.volume()
+        # print(currentVolume)
+        self.player.setVolume(current_volume + 10)
 
     def volumeDown(self):
-        currentVolume = self.player.volume() #
-        print(currentVolume)
-        self.player.setVolume(currentVolume - 5)
+        current_volume = self.player.volume()
+        # print(currentVolume)
+        self.player.setVolume(current_volume - 10)
 
     def volumeMute(self):
         self.player.setMuted(not self.player.isMuted())

@@ -1,9 +1,28 @@
-from PyQt5.QtGui import *
+from PyQt5.QtGui import QIcon, QPixmap, QCursor
+from PyQt5.QtWidgets import QLabel, QPushButton, QHBoxLayout, QGridLayout, QDesktopWidget
 from musicPlayer import *
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
+
+
+def styleButton(button):
+    button.setCursor(Qt.PointingHandCursor)
+    button.setStyleSheet(
+        """QPushButton{background-color: rgb(249, 228, 183);
+                    color: black;
+                    border-radius: 15px;
+                    font-family: 'Georgia';
+                    font-size: 25px;
+                    padding: 5px 0;}"""
+        """QPushButton::hover
+        {
+        background-color : white;
+        }
+        """
+    )
 
 
 class FirstWindow(QWidget):
-
     switch_window = QtCore.pyqtSignal()
 
     def __init__(self):
@@ -18,25 +37,28 @@ class FirstWindow(QWidget):
 
         self.image = QPixmap("./PNG-cards-1.3/title.png")
         self.label = QLabel()
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setAlignment(Qt.AlignCenter)
         self.label.setPixmap(self.image)
 
-        self.startbutton = QPushButton("PLAY")
-        self.volumeUpButton = QPushButton("+", clicked=self.music.volumeUp)
-        self.volumeDownButton = QPushButton("-", clicked=self.music.volumeDown)
-        self.volumeMuteButton = QPushButton("Mute", clicked=self.music.volumeMute)
+        self.start_button = QPushButton("PLAY")
+        self.volumeUpButton = QPushButton("+")
+        self.volumeUpButton.clicked.connect(self.music.volumeUp)
+        self.volumeDownButton = QPushButton("-")
+        self.volumeDownButton.clicked.connect(self.music.volumeDown)
+        self.volumeMuteButton = QPushButton("Mute")
+        self.volumeMuteButton.clicked.connect(self.music.volumeMute)
 
-        self.styleButton(self.volumeUpButton)
-        self.styleButton(self.volumeDownButton)
-        self.styleButton(self.volumeMuteButton)
+        styleButton(self.volumeUpButton)
+        styleButton(self.volumeDownButton)
+        styleButton(self.volumeMuteButton)
 
-        self.volumelayout = QHBoxLayout()
-        self.volumelayout.addWidget(self.volumeDownButton)
-        self.volumelayout.addWidget(self.volumeMuteButton)
-        self.volumelayout.addWidget(self.volumeUpButton)
+        self.volume_layout = QHBoxLayout()
+        self.volume_layout.addWidget(self.volumeDownButton)
+        self.volume_layout.addWidget(self.volumeMuteButton)
+        self.volume_layout.addWidget(self.volumeUpButton)
 
-        self.startbutton.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.startbutton.setStyleSheet(
+        self.start_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.start_button.setStyleSheet(
             """QPushButton{background-color: rgb(249, 228, 183);
             color: black;
             border-radius: 25px;
@@ -51,11 +73,11 @@ class FirstWindow(QWidget):
             """
         )
 
-        self.startbutton.clicked.connect(self.secondwindow)
+        self.start_button.clicked.connect(self.secondWindowEmit)
         self.grid = QGridLayout()
         self.grid.addWidget(self.label, 1, 1)
-        self.grid.addWidget(self.startbutton, 2, 1)
-        self.grid.addLayout(self.volumelayout, 3, 1)
+        self.grid.addWidget(self.start_button, 2, 1)
+        self.grid.addLayout(self.volume_layout, 3, 1)
         self.setLayout(self.grid)
 
         self.center()
@@ -67,47 +89,6 @@ class FirstWindow(QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-
-    def secondwindow(self):
+    def secondWindowEmit(self):
         self.switch_window.emit()
 
-    def styleButton(self, button):
-        button.setCursor(QtCore.Qt.PointingHandCursor)
-        button.setStyleSheet(
-            """QPushButton{background-color: rgb(249, 228, 183);
-                        color: black;
-                        border-radius: 15px;
-                        font-family: 'Georgia';
-                        font-size: 25px;
-                        padding: 5px 0;}"""
-            """QPushButton::hover
-            {
-            background-color : white;
-            }
-            """
-        )
-
-    def center(self):
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
-
-    def styleButton(self, button):
-        button.setCursor(QtCore.Qt.PointingHandCursor)
-        button.setStyleSheet(
-            """QPushButton{background-color: rgb(249, 228, 183);
-                        color: black;
-                        border-radius: 15px;
-                        font-family: 'Georgia';
-                        font-size: 25px;;
-                        padding: 5px 0;}"""
-            """QPushButton::hover
-            {
-            background-color : white;
-            }
-            """
-        )
-
-    def firstwindow(self):
-        self.switch_window.emit()

@@ -1,8 +1,10 @@
-from firstWindow import *
-from secondWindow import *
+from firstWindow import FirstWindow
+from secondWindow import SecondWindow
+from PyQt5.QtWidgets import QApplication
+import sys
 
 
-class Controller:
+class MyController:
     def __init__(self):
         self.first_window = FirstWindow()
         self.window = SecondWindow()
@@ -18,8 +20,7 @@ class Controller:
 
 
 if __name__ == "__main__":
-    import sys
     app = QApplication(sys.argv)
-    controller = Controller()
+    controller = MyController()
     controller.show_window1()
     sys.exit(app.exec_())
