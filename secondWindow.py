@@ -167,32 +167,21 @@ class SecondWindow(QWidget):
                 idx = self.pLabel.index(pl)
                 if idx < len(self.intPlayercards):
                     self.loadCard(pl, self.playercards[idx], self.cntLst[idx], 300)
-            if burst(count(self.intPlayercards)):
-                self.money_display(fight_message[4], 0)
-            elif count(self.intPlayercards) == 21:
-                self.money_display(fight_message[3], 3)
+            res = burst(count(self.intPlayercards))
+            self.money_display(fight_message[res], res)
         elif key == 'stay':
             self.loadCard(self.dLabel[1], self.dealercards[1], self.cntLst[1], 0)
-            if count(self.intDealercards) > 21:
-                self.money_display(fight_message[1], 1)
-            else:
-                # 딜러 카드 합이 17이상이면 더이상 추가 카드를 받을 수 없음
-                while count(self.intDealercards) < 17:
-                    cardappend(self.intDealercards, self.card)
-                    self.dealercards = intToString_card(self.intDealercards)
-                    for dl in self.dLabel:
-                        idx = self.dLabel.index(dl)
-                        if idx < len(self.intDealercards):
-                            self.loadCard(dl, self.dealercards[idx], self.cntLst[idx], 0)
-                if count(self.intDealercards) > 21:
-                    self.money_display(fight_message[3], 3)
-                elif count(self.intDealercards) == 21:
-                    self.money_display(fight_message[0], 0)
-                else:
-                    res = fight(count(self.intPlayercards), count(self.intDealercards))
-                    self.money_display(fight_message[res], res)
-        # if key == 'reset':
-        else:
+            # 딜러 카드 합이 17이상이면 더이상 추가 카드를 받을 수 없음
+            while count(self.intDealercards) < 17:
+                cardappend(self.intDealercards, self.card)
+                self.dealercards = intToString_card(self.intDealercards)
+                for dl in self.dLabel:
+                    idx = self.dLabel.index(dl)
+                    if idx < len(self.intDealercards):
+                        self.loadCard(dl, self.dealercards[idx], self.cntLst[idx], 0)
+            res = fight(count(self.intPlayercards), count(self.intDealercards))
+            self.money_display(fight_message[res], res)
+        elif key == 'reset':
             self.components_disable(True)
             self.clear()
             self.display.setText('Play more? Click deal button')

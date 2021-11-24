@@ -23,7 +23,7 @@ def write(money):
 
 def set_money(now, betting, num):
     # lose : 0
-    if num == 0:
+    if num == 0 or num == 4:
         write(str(now - betting))
         return now - betting
     # win : 1
@@ -53,17 +53,21 @@ def cardappend(cardlist, card):
 
 # end 버튼 클릭 이벤트, Lose: 0 Win: 1 Draw 2
 def fight(player_result, dealer_result):
+    if player_result > dealer_result or dealer_result > 21:
+        return 1
+    elif player_result < dealer_result or dealer_result == 21:
+        return 0
     if player_result == dealer_result:
         return 2
-    elif player_result < dealer_result:
-        return 0
-    elif player_result > dealer_result:
-        return 1
 
 
 def burst(result):
     if result > 21:
-        return True
+        return 4
+    elif result == 21:
+        return 3
+    else:
+        return 5  # nothing, draw
 
 
 def set_card():
@@ -95,15 +99,6 @@ def count(card):
 def intToString_card(card):
     card_list = []
     for data in card:
-        cardsuit = marks[data//13]
-        cardnumber = card_english[data % 13]
-        card = str(cardsuit) + str(cardnumber)
+        card = str(marks[data//13]) + str(card_english[data % 13])
         card_list.append(card)
     return card_list
-
-
-def dealer_algo(result, who, card):
-    while result <= 16:
-        cardappend(who, card)
-        if count(who) > 16:
-            break

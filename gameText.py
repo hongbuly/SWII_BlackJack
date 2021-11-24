@@ -1,5 +1,5 @@
 
-fight_message = ["You lose!", "You win!", "Draw!", "Congratulations! \nBlack Jack!", "Burst!"]
+fight_message = ["You lose!", "You win!", "Draw!", "Congratulations! \nBlack Jack!", "Burst!", ""]
 style_sheet = ["""QMessageBox
             {
             background-color: white;
