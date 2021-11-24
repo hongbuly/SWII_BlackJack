@@ -66,17 +66,6 @@ def burst(result):
         return True
 
 
-def get_fight_text(num):
-    if num == 0:
-        return "Lose"
-    elif num == 1:
-        return "Win"
-    elif num == 3:
-        return "Black Jack!!"
-    else:
-        return "Draw"
-
-
 def set_card():
     return random.sample(range(52), 17)
 
