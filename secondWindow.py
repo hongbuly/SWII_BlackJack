@@ -77,16 +77,10 @@ class SecondWindow(QWidget):
         # show all the widgets
         self.show()
 
-    def loadPlayerCard(self, label, cardsuit, cnt):
+    def loadCard(self, label, cardsuit, cnt, num):
         self.pixmap = QPixmap(f"./PNG-cards-1.3/{cardsuit}").scaledToWidth(150)
         label.setPixmap(self.pixmap)
-        label.move(cnt, 300)
-        label.resize(self.pixmap.width(), self.pixmap.height())
-
-    def loadDealerCard(self, label, cardsuit, cnt):
-        self.pixmap = QPixmap(f"./PNG-cards-1.3/{cardsuit}").scaledToWidth(150)
-        label.setPixmap(self.pixmap)
-        label.move(cnt, 0)
+        label.move(cnt, num)  # player 300, dealer 0
         label.resize(self.pixmap.width(), self.pixmap.height())
 
     # 프로그램 센터에 배치
@@ -100,20 +94,18 @@ class SecondWindow(QWidget):
         for pl in self.pLabel:
             idx = self.pLabel.index(pl)
             if idx < 2:
-                self.loadPlayerCard(pl, 'background', self.cntLst[idx])
+                self.loadCard(pl, 'background', self.cntLst[idx], 300)
             else:
-                self.loadPlayerCard(pl, 'green', self.cntLst[idx])
+                self.loadCard(pl, 'green', self.cntLst[idx], 300)
 
         for dl in self.dLabel:
             idx = self.dLabel.index(dl)
             if idx < 2:
-                self.loadDealerCard(dl, 'background', self.cntLst[idx])
+                self.loadCard(dl, 'background', self.cntLst[idx], 0)
             else:
-                self.loadDealerCard(dl, 'green', self.cntLst[idx])
+                self.loadCard(dl, 'green', self.cntLst[idx], 0)
 
-        self.betting_cost = 1000
-        self.display.setText('')
-        self.b_display.setText('bet: ' + str(self.betting_cost))
+        self.betting_display('', 1000)
         self.components_btn[1].setDisabled(True)
         self.components_btn[2].setDisabled(True)
 
@@ -157,9 +149,9 @@ class SecondWindow(QWidget):
                     self.playercards = intToString_card(self.intPlayercards)
                     # print(self.intToString_card)
                     # ['hearts9', 'spades6']
-                    self.loadPlayerCard(self.pLabel[0], self.playercards[0], self.cntLst[0])
-                    self.loadPlayerCard(self.pLabel[1], self.playercards[1], self.cntLst[1])
-                    self.loadDealerCard(self.dLabel[0], self.dealercards[0], self.cntLst[0])
+                    self.loadCard(self.pLabel[0], self.playercards[0], self.cntLst[0], 300)
+                    self.loadCard(self.pLabel[1], self.playercards[1], self.cntLst[1], 300)
+                    self.loadCard(self.dLabel[0], self.dealercards[0], self.cntLst[0], 0)
                     # self.loadDealerCard(self.dLabel[1], self.dealercards[1], self.cntLst[1])
 
                     if count(self.intPlayercards) == 21:
@@ -174,13 +166,13 @@ class SecondWindow(QWidget):
             for pl in self.pLabel:
                 idx = self.pLabel.index(pl)
                 if idx < len(self.intPlayercards):
-                    self.loadPlayerCard(pl, self.playercards[idx], self.cntLst[idx])
+                    self.loadCard(pl, self.playercards[idx], self.cntLst[idx], 300)
             if burst(count(self.intPlayercards)):
                 self.money_display(fight_message[4], 0)
             elif count(self.intPlayercards) == 21:
                 self.money_display(fight_message[3], 3)
         elif key == 'stay':
-            self.loadDealerCard(self.dLabel[1], self.dealercards[1], self.cntLst[1])
+            self.loadCard(self.dLabel[1], self.dealercards[1], self.cntLst[1], 0)
             if count(self.intDealercards) > 21:
                 self.money_display(fight_message[1], 1)
             else:
@@ -191,7 +183,7 @@ class SecondWindow(QWidget):
                     for dl in self.dLabel:
                         idx = self.dLabel.index(dl)
                         if idx < len(self.intDealercards):
-                            self.loadDealerCard(dl, self.dealercards[idx], self.cntLst[idx])
+                            self.loadCard(dl, self.dealercards[idx], self.cntLst[idx], 0)
                 if count(self.intDealercards) > 21:
                     self.money_display(fight_message[3], 3)
                 elif count(self.intDealercards) == 21:
@@ -206,11 +198,13 @@ class SecondWindow(QWidget):
             self.display.setText('Play more? Click deal button')
 
     def components_disable(self, disable):
+        # deal, stay, append, reset, plus, minus
         self.components_btn[1].setDisabled(disable)
         self.components_btn[2].setDisabled(disable)
+
         self.components_btn[0].setDisabled(not disable)
-        self.components_btn[3].setDisabled(not disable)
         self.components_btn[4].setDisabled(not disable)
+        self.components_btn[5].setDisabled(not disable)
 
     def betting_display(self, message, cost):
         self.display.setText(message)
