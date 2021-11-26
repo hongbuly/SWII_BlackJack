@@ -3,23 +3,12 @@ from PyQt5.QtWidgets import QLabel, QPushButton, QHBoxLayout, QGridLayout, QDesk
 from musicPlayer import *
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
+from gameText import style_sheet
 
 
 def styleButton(button):
     button.setCursor(Qt.PointingHandCursor)
-    button.setStyleSheet(
-        """QPushButton{background-color: rgb(249, 228, 183);
-                    color: black;
-                    border-radius: 15px;
-                    font-family: 'Georgia';
-                    font-size: 25px;
-                    padding: 5px 0;}"""
-        """QPushButton::hover
-        {
-        background-color : white;
-        }
-        """
-    )
+    button.setStyleSheet(style_sheet[4])
 
 
 class FirstWindow(QWidget):
@@ -58,20 +47,7 @@ class FirstWindow(QWidget):
         self.volume_layout.addWidget(self.volumeUpButton)
 
         self.start_button.setCursor(QCursor(Qt.PointingHandCursor))
-        self.start_button.setStyleSheet(
-            """QPushButton{background-color: rgb(249, 228, 183);
-            color: black;
-            border-radius: 25px;
-            font-family: 'Georgia';
-            font-size: 40px;
-            margin-bottom: 5px;
-            padding: 8px 0;}"""
-            """QPushButton::hover
-            {
-            background-color : white;
-            }
-            """
-        )
+        self.start_button.setStyleSheet(style_sheet[5])
 
         self.start_button.clicked.connect(self.secondWindowEmit)
         self.grid = QGridLayout()
@@ -91,4 +67,3 @@ class FirstWindow(QWidget):
 
     def secondWindowEmit(self):
         self.switch_window.emit()
-
