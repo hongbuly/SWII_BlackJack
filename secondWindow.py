@@ -45,15 +45,15 @@ class SecondWindow(QWidget):
 
         self.components_btn = list()  # deal, stay, append, reset, plus, minus
         button_groups = [
-            {'buttons': ["deal", "stay"], 'layout': betting_vbox},
-            {'buttons': ["new card", "reset", "+100", "-100"], 'layout': hbox},
+            {'buttons': ["+100", "-100"], 'layout': betting_vbox},
+            {'buttons': ["deal", "new card", "stay", "reset"], 'layout': hbox},
             ]
 
         for label in button_groups:
             i = 0
             for btnText in label['buttons']:
                 self.components_btn.append(Button(btnText, self.button_clicked))
-                self.styleButton(self.components_btn[i])
+                self.styleButton(self.components_btn[-1])
                 label['layout'].addWidget(self.components_btn[-1])
                 i += 1
 
@@ -106,8 +106,8 @@ class SecondWindow(QWidget):
                 self.loadCard(dl, 'green', self.cntLst[idx], 0)
 
         self.betting_display('', 1000)
-        self.components_btn[1].setDisabled(True)
-        self.components_btn[2].setDisabled(True)
+        self.components_btn[3].setDisabled(True)
+        self.components_btn[4].setDisabled(True)
 
     def styleButton(self, button):
         button.setCursor(Qt.PointingHandCursor)
@@ -117,8 +117,9 @@ class SecondWindow(QWidget):
         msg_box = self.q_msg_box
         msg_box.setText(msg)
         msg_box.exec()
-        self.components_btn[1].setDisabled(True)
-        self.components_btn[2].setDisabled(True)
+        self.components_btn[3].setDisabled(True)
+        self.components_btn[4].setDisabled(True)
+        self.components_btn[5].setDisabled(False)
         self.display.setText('If you wanna restart, click reset button')
 
     def button_clicked(self):
@@ -138,6 +139,7 @@ class SecondWindow(QWidget):
                     self.betting_display("You don't have much money", 1000)
                 else:
                     self.display.setText("let's start!")
+                    self.components_btn[5].setDisabled(True)
                     self.components_disable(False)
 
                     self.card = set_card()
@@ -168,7 +170,8 @@ class SecondWindow(QWidget):
                 if idx < len(self.intPlayercards):
                     self.loadCard(pl, self.playercards[idx], self.cntLst[idx], 300)
             res = burst(count(self.intPlayercards))
-            self.money_display(fight_message[res], res)
+            if res != 5:
+                self.money_display(fight_message[res], res)
         elif key == 'stay':
             self.loadCard(self.dLabel[1], self.dealercards[1], self.cntLst[1], 0)
             # 딜러 카드 합이 17이상이면 더이상 추가 카드를 받을 수 없음
@@ -186,14 +189,14 @@ class SecondWindow(QWidget):
             self.clear()
             self.display.setText('Play more? Click deal button')
 
-    def components_disable(self, disable):
+    def components_disable(self, check):
         # deal, stay, append, reset, plus, minus
-        self.components_btn[1].setDisabled(disable)
-        self.components_btn[2].setDisabled(disable)
+        self.components_btn[3].setDisabled(check)
+        self.components_btn[4].setDisabled(check)
 
-        self.components_btn[0].setDisabled(not disable)
-        self.components_btn[4].setDisabled(not disable)
-        self.components_btn[5].setDisabled(not disable)
+        self.components_btn[0].setDisabled(not check)
+        self.components_btn[1].setDisabled(not check)
+        self.components_btn[2].setDisabled(not check)
 
     def betting_display(self, message, cost):
         self.display.setText(message)

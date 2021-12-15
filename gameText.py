@@ -1,5 +1,4 @@
-
-fight_message = ["You lose!", "You win!", "Draw!", "Congratulations! \nBlack Jack!", "Burst!", ""]
+fight_message = ["You lose!", "You win!", "Draw!", "Congratulations! \nBlack Jack!", "Burst!", "Draw"]
 
 style_sheet = ["""QMessageBox
             {
@@ -8,7 +7,6 @@ style_sheet = ["""QMessageBox
             }
             """,
                """QLabel
-
                            {
                            font-size: 18px;
                            font-family: 'Georgia';
